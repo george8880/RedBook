@@ -4,8 +4,11 @@ import java.util.List;
 
 public class Person {
 	
-	 static String[] fields = {"ID", "Name", "Essay", "Pages", "home address", "office address", "home and office address", 
-		"business address", "seasonal address", "last known address", "occupation", 
+	static String[] fields = {"ID", "Name", "Essay", "Pages", 
+		"home address", "office address", "home and office address", 
+		"business address", "seasonal address", "mailing address", "last known address", 
+		"born", "died", "prepared at", "occupation", 
+		"offices held", "member of", "years in college", "harvard sons", "harvard brothers",
 		"married", "spouse", "child", "children", "grandchildren", "great-grandchild", 
 		"offices held, honor and awards", "publications", "publications and fine arts"
 		 };

@@ -15,9 +15,9 @@ public class NameFixer {
 	
 	public static void main(String[] args) throws IOException {
 		getNameList("NameList 1940.txt");
-		ICsvListReader listReader = new CsvListReader(new FileReader("idMap2.csv"), 
+		ICsvListReader listReader = new CsvListReader(new FileReader("idMap_1940_25.csv"), 
 				CsvPreference.STANDARD_PREFERENCE);
-		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_fixed.csv"), 
+		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_fixed_1940_25.csv"), 
 				CsvPreference.STANDARD_PREFERENCE);
     	Scanner input = new Scanner(System.in);
 		

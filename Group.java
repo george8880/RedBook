@@ -9,10 +9,13 @@ import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 
 public class Group {
-	static String[] header = {"ID", "Name", "Essay", "Pages", "home_address", "office_address", 
-		"home_and_office_address", "business_address", "seasonal_address", "last_known_address", "occupation", 
+	static String[] header = {"ID", "Name", "Essay", "Pages", 
+		"home address", "office address", "home and office address", 
+		"business address", "seasonal address", "mailing address", "last known address", 
+		"born", "died", "prepared at", "occupation", 
+		"offices held", "member of", "years in college", "harvard sons", "harvard brothers",
 		"married", "spouse", "child", "children", "grandchildren", "great-grandchild", 
-		"offices_held,_honor_and_awards", "publications", "publications_and_fine_arts"
+		"offices held, honor and awards", "publications", "publications and fine arts"
 		 };
 	
 	private Map<Integer, Person> idMap; //maps id to name
@@ -24,8 +27,8 @@ public class Group {
 	}
 	
 	//Used when there is an existing map to build upon
-	public Group(File file) throws IOException{
-		CsvListReader reader = new CsvListReader(new FileReader(file),  
+	public Group(String filename) throws IOException{
+		CsvListReader reader = new CsvListReader(new FileReader(filename),  
 				CsvPreference.STANDARD_PREFERENCE);
 		List<String> values = reader.read();
 		

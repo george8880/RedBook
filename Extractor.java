@@ -13,11 +13,11 @@ public class Extractor {
 	static Scanner input = new Scanner(System.in);
 	
 	//Starting ID number for this session
-	static final int ID_START = 1000;
+	static final int ID_START = 2000;
 	
 	public static void main(String[] args) throws IOException {
 		//loads the pdf document and records total number of pages 
-		File file = new File("1940_50_polished.pdf");
+		File file = new File("1940_25_polished.pdf");
 		PDDocument doc = new PDDocument();
 		doc = PDDocument.load(file);
 		totalPages = doc.getNumberOfPages();
@@ -53,6 +53,11 @@ public class Extractor {
 			
 			while (!page.isEmpty()) {
 				String sentence = page.removeHead();
+				
+				String temp = stripSpaces(sentence);
+				if (temp.indexOf("ANNIVER") == -1 && temp.indexOf("HARVARDC") == -1 &&
+						!sentence.trim().equals("YEARS IN COMRGE;")) {
+					
 				isField = isField(sentence);
 				
 				//Name could pop up anywhere, after info field or essay, so always check
@@ -62,9 +67,6 @@ public class Extractor {
 						currentPerson.essay = store;
 						store = "";
 					}
-						
-					if (sentence.indexOf("BRADLEE") != -1)
-						System.out.println("HERE");
 					
 					currentPerson = new Person(sentence.trim());
 					g.addPerson(currentPerson, id);
@@ -121,24 +123,33 @@ public class Extractor {
 				}
 				System.out.println(currentPerson.name);
 				
-				//PROPER ADD PAGES DUE TO SPLITS
-				int p = i;
+				//Page offsets for 1940_50
+				/*
 				if (i >= 341)
 					p += 18;
 				if (i >= 537)
 					p += 5;
+				currentPerson.addPage(p);*/
+				int p = i;
+				if (i >= 102)
+					p += 459;
+				if (i >= 542)
+					p += 4;
+				if (i >= 736)
+					p += 4;
 				currentPerson.addPage(p);
 				
-				System.out.println("Page: " + i);
+				
 			}	
+			}
 		}
 		
 		doc.close();
 		
 		System.out.println("DONE");
 		
-		g.outputInfo("infoFieldsPages.csv");
-		g.outputMap("idMapPages.csv");
+		g.outputInfo("infoFieldsPages_1940_25.csv");
+		g.outputMap("idMapPages_1940_25.csv");
 	}
 	
 	private static MyList<String> preparePage (int pageNum, PDFTextStripper st, 

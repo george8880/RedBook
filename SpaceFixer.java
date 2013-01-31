@@ -11,21 +11,27 @@ public class SpaceFixer {
 	static String[] fields = {"homeaddress", "officeaddress", "occupation", "married",
 		"child", "grandchildren", "officesheld,honorandawards", "seasonaladdress", 
 		"publicationsandfinearts", "lastknownaddress", "businessaddress", "spouse", "children",
-		"publications", "homeandofficeaddress", "great-grandchild"};
+		"publications", "homeandofficeaddress", "great-grandchild", 
+		
+		"preparedat", "officesheld", "memberof", "yearsincollege", "harvard sons", "harvardbrothers",
+		"born", "died", "mailingaddress"};
 	static String[] fix = {"home address", "office address", "occupation", "married",
 		"child", "grandchildren", "offices held, honor and awards", "seasonal address", 
 		"publications and fine arts", "last known address", "business address", "spouse", "children",
-		"publications", "home and office address", "great-grandchild"};
+		"publications", "home and office address", "great-grandchild", 
+		
+		"prepared at", "offices held", "member of", "years in college", "harvard sons", "harvard brothers",
+		"born", "died", "mailing address"};
 	
 	public static void main(String[] args) throws IOException {
-		File file = new File("1940_50_polished - Copy.pdf");
+		File file = new File("1940_25_polished.pdf");
 		PDDocument doc = PDDocument.load(file);
 		int totalPages = doc.getNumberOfPages();
 		
 		//used to extract text from pdf document
 		PDFTextStripper st = new PDFTextStripper();
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("WSfixed.txt"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("WSfixed_1940_25.txt"));
 		
 		for (int i = 1; i <= totalPages; i++) {
 			//only look at one page at a time
@@ -62,8 +68,14 @@ public class SpaceFixer {
 					if (!fix.equals(""))
 						line = fix + ":" + line.substring(index + 1);
 				}
-				bw.write(line);
-				bw.newLine();
+				
+				//gets rid of certain lines that aren't supposed to be there
+				String temp = stripSpaces(line);
+				if (temp.indexOf("ANNIVER") == -1 &&
+						temp.indexOf("HARVARDC") == -1) {
+					bw.write(line);
+					bw.newLine();
+				}
 			}
 		}
 		doc.close();
@@ -102,6 +114,18 @@ public class SpaceFixer {
 		}
 		return result.toLowerCase();	
 	}
+	
+	//gets rid of all spaces and dots
+			public static String stripSpaces (String s) {
+				String result = "";
+				
+				for (int i = 0; i < s.length(); i++) {
+					char c = s.charAt(i);
+					if (c != ' ' && c != '.')
+						result += c;
+				}
+				return result;	
+			}
 	
 	//from rosetta stone
 	public static int computeDistance(String s1, String s2) {
