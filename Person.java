@@ -10,7 +10,7 @@ public class Person {
 		"born", "died", "prepared at", "occupation", 
 		"offices held", "member of", "years in college", "harvard sons", "harvard brothers",
 		"married", "spouse", "child", "children", "grandchildren", "great-grandchild", 
-		"offices held, honor and awards", "publications", "publications and fine arts"
+		"offices held, honor and awards", "publications", "publications and fine arts", "degrees"
 		 };
 	 
 	 final static String NO_FIELD_INFO_MSG = "N/A";
@@ -20,6 +20,8 @@ public class Person {
 	String[] infoFields;
 	ArrayList<Integer> pagesSpanned;
 	
+	final boolean PAGE_ON = true;
+	
 	public Person(String s) {
 		name = s;
 		infoFields = new String[fields.length];
@@ -27,7 +29,16 @@ public class Person {
 	}
 	
 	public void addField (String s) {
-		String field = s.substring(0, s.indexOf(':'));
+		String field;
+		if (PAGE_ON) {
+			if (s.indexOf(';') == -1)
+				field = s.substring(0, s.indexOf(':'));
+			else
+				field = s.substring(0, s.indexOf(';'));
+		}
+		else
+			field = s.substring(0, s.indexOf(':'));
+		
 		for (int i = 4; i < fields.length; i++) {
 			if (field.indexOf(fields[i]) != -1) {
 				infoFields[i] = s;

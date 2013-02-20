@@ -1,3 +1,5 @@
+//Fixes whitespace errors in name
+
 import java.io.*;
 import java.util.*;
 
@@ -12,12 +14,14 @@ public class NameFixer {
 	
 	static ArrayList<String> nameList = new ArrayList<String>();
 	static List<String> fixed = new ArrayList<String>();
+	//static Map<String, String> pastWork = new HashMap<String, String>();
 	
 	public static void main(String[] args) throws IOException {
-		getNameList("NameList 1940.txt");
-		ICsvListReader listReader = new CsvListReader(new FileReader("idMap_1940_25.csv"), 
+		getNameList("NameList1941.txt");
+		//loadPast("pastWork.txt");
+		ICsvListReader listReader = new CsvListReader(new FileReader("idMap_1941_50.csv"), 
 				CsvPreference.STANDARD_PREFERENCE);
-		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_fixed_1940_25.csv"), 
+		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_fixed_1941_50.csv"), 
 				CsvPreference.STANDARD_PREFERENCE);
     	Scanner input = new Scanner(System.in);
 		
@@ -33,25 +37,37 @@ public class NameFixer {
         	String fixedName;
         	int minD = computeDistance(name, removeSpaces(nameList.get(0)));
         	
-        	int index = 0;
-        	for (int i = 1; i < nameList.size(); i++) {
-        		int dist = computeDistance (name, removeSpaces(nameList.get(i)));
-        		if (dist < minD) {
-        			minD = dist;
-        			index = i;
-        		}
+        	//If entry also handles in some other runtime, no need to do again
+        	/*if (pastWork.containsKey((String) customerList.get(1))) {
+        		String fix = pastWork.get((String) customerList.get(1));
+        		
+        		if (fix.equals("g"))
+        			fixedName = (String) customerList.get(1);
+        		else        		
+        			fixedName = pastWork.get((String) customerList.get(1));
+        	} //JOHN HANCOCK NOTMAN*/
+        	  
+        	if (true) {
+	        	int index = 0;
+	        	for (int i = 1; i < nameList.size(); i++) {
+	        		int dist = computeDistance (name, removeSpaces(nameList.get(i)));
+	        		if (dist < minD) {
+	        			minD = dist;
+	        			index = i;
+	        		}
+	        	}
+	        	if (minD >= 3) {
+	        		System.out.println((String) customerList.get(1));
+	        		String answer = input.nextLine();
+	        		if (answer.equals("g"))
+	        			fixedName=(String) customerList.get(1);
+	        		else
+	        			fixedName = answer;
+	        	}
+	        	else
+	        		fixedName = nameList.get(index);
         	}
-        	if (minD >= 7) {
-        		System.out.println((String) customerList.get(1));
-        		String answer = input.nextLine();
-        		if (answer.equals("g"))
-        			fixedName=(String) customerList.get(1);
-        		else
-        			fixedName = answer;
-        	}
-        	else
-        		fixedName = nameList.get(index);
-        	
+	        	
         	fixed.add(id);
         	fixed.add(fixedName);
         	fixed.add(deceased);
@@ -75,25 +91,25 @@ public class NameFixer {
 	}
 	
 	public static void getNameList (String file) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("NameList 1940.txt"));
-		BufferedWriter bw = new BufferedWriter(new FileWriter("1940NameList.txt"));
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		//BufferedWriter bw = new BufferedWriter(new FileWriter("1940NameList.txt"));
 		String s = br.readLine();
 		
 		while (s != null) {
-			if (!s.equals("1940") && !s.equals("") && (s.indexOf(')') == -1 || s.indexOf('(') != -1) &&
+			if (!s.equals("1941") && !s.equals("") && (s.indexOf(')') == -1 || s.indexOf('(') != -1) &&
 					s.substring(0,1).equals(s.substring(0,1).toUpperCase())) {
 				if (s.indexOf('(') != -1)
 					s = s.substring(0, s.indexOf('('));
 				if (s.length() >= 8) {
 					nameList.add(s);
-					bw.write(s);
-					bw.newLine();
+					//bw.write(s);
+					//bw.newLine();
 				}
 			}
 			s = br.readLine();
 		}
 		
-		bw.close();
+		//bw.close();
 		br.close();
 	}
 	
@@ -146,4 +162,20 @@ public class NameFixer {
 		    }
 		    return costs[s2.length()];
 		  }
+		
+		//loads past work in case program ends in the middle
+		//can resume
+		/*
+		private static void loadPast (String filename) throws IOException {
+			BufferedReader br = new BufferedReader(new FileReader(filename));
+			String s = br.readLine();
+			
+			while (s != null) {
+				String fixed = br.readLine();
+				pastWork.put(s, fixed);
+				s = br.readLine();
+			}
+			
+			br.close();
+		} */
 }

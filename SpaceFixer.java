@@ -1,3 +1,5 @@
+//Used on initial pdf. Fixes whitespaces in headers
+
 import java.io.*;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -13,25 +15,25 @@ public class SpaceFixer {
 		"publicationsandfinearts", "lastknownaddress", "businessaddress", "spouse", "children",
 		"publications", "homeandofficeaddress", "great-grandchild", 
 		
-		"preparedat", "officesheld", "memberof", "yearsincollege", "harvard sons", "harvardbrothers",
-		"born", "died", "mailingaddress"};
+		"preparedat", "officesheld", "memberof", "yearsincollege", "harvardsons", "harvardbrothers",
+		"born", "died", "mailingaddress", "degrees"};
 	static String[] fix = {"home address", "office address", "occupation", "married",
 		"child", "grandchildren", "offices held, honor and awards", "seasonal address", 
 		"publications and fine arts", "last known address", "business address", "spouse", "children",
 		"publications", "home and office address", "great-grandchild", 
 		
 		"prepared at", "offices held", "member of", "years in college", "harvard sons", "harvard brothers",
-		"born", "died", "mailing address"};
+		"born", "died", "mailing address", "degrees"};
 	
 	public static void main(String[] args) throws IOException {
-		File file = new File("1940_25_polished.pdf");
+		File file = new File("1941_50.pdf");
 		PDDocument doc = PDDocument.load(file);
 		int totalPages = doc.getNumberOfPages();
 		
 		//used to extract text from pdf document
 		PDFTextStripper st = new PDFTextStripper();
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("WSfixed_1940_25.txt"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("WSfixed_1941_50.txt"));
 		
 		for (int i = 1; i <= totalPages; i++) {
 			//only look at one page at a time
@@ -165,12 +167,39 @@ public class SpaceFixer {
 			s = s.substring(indexOfNewLine + 1);
 		} //don't need to add last line because it is just an empty line
 		//Remove extraneous lines (first page, first two lines and last line (page)
-		//All other lines, remove first line and last line
-		result.removeHead();
-		result.removeTail();
+		//All other lines, remove first line and last line		
 		if (pageNum == 1)
 			result.removeHead();
 		
+		if (isTitle(result.head.v))
+			result.removeHead();
+		if (isPageNum(result.tail.v))
+			result.removeTail();
+		
 		return result;
+	}
+
+	//tests if a line is a title at the top of the page
+	//HARVARDCLASSOF1941 or 25THANNIVERSARYREPORT
+	public static boolean isTitle(String s) {
+		String test = Extractor.stripSpaces(s).toUpperCase().trim();
+		int d1 = SpaceFixer.computeDistance(test, "HARVARDCLASSOF1941");
+		int d2 = SpaceFixer.computeDistance(test, "25THANNIVERSARYREPORT");
+		
+		if (d1 <= 7 || d2 <= 7)
+			return true;
+		
+		return false;
+	}
+	
+	//tests if a line is the bottom page number
+	//i.e. [ # ]
+	public static boolean isPageNum(String s) {
+		String test = Extractor.stripSpaces(s).toUpperCase().trim();
+		if (test.length() <= 7 && test.indexOf('[') != -1 && test.indexOf(']') != -1) {
+			System.out.println(test);
+			return true;
+		}
+		return false;
 	}
 }

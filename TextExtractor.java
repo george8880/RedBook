@@ -1,4 +1,7 @@
 //Uses PDFBox and SuperCVS libraries
+//Now only used to extract page numbers
+
+//main extractor. extracts info fields and texts
 
 import java.io.*;
 import java.util.*;
@@ -8,23 +11,17 @@ import org.apache.pdfbox.util.PDFTextStripper;
 
 public class TextExtractor {
 	
-	static String[] fix = {"home address", "office address", "home and office address", 
-		"business address", "seasonal address", "mailing address", "last known address", 
-		"born", "died", "prepared at", "occupation", 
-		"offices held", "member of", "years in college", "harvard sons", "harvard brothers",
-		"married", "spouse", "child", "children", "grandchildren", "great-grandchild", 
-		"offices held, honor and awards", "publications", "publications and fine arts"
-		 };
+	static String[] fix = Person.fields;
 	
 	static int totalPages;
 	static Group g = new Group();
 	static Scanner input = new Scanner(System.in);
 	
 	//Starting ID number for this session
-	static final int ID_START = 2000;
+	static final int ID_START = 4000;
 	
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("WSfixed_1940_25.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("WSfixed_1941_50.txt"));
 		
 		//list of boolean values to keep track of where the text reader is
 		boolean isEssay = false;
@@ -63,6 +60,11 @@ public class TextExtractor {
 							currentPerson.addField(store);
 						store = "";
 					}		
+					
+					//If sentence has + sign in it, it messes up CSV
+					int plusIndex = sentence.indexOf('+');
+					if (plusIndex != -1)
+						sentence = sentence.substring(0, plusIndex)+ sentence.substring(plusIndex + 1);
 					
 					currentPerson = new Person(sentence.trim());
 					g.addPerson(currentPerson, id);
@@ -125,8 +127,8 @@ public class TextExtractor {
 		
 		System.out.println("DONE");
 		br.close();
-		g.outputInfo("infoFields_1940_25.csv");
-		g.outputMap("idMap_1940_25.csv");
+		g.outputInfo("infoFields_1941_50.csv");
+		g.outputMap("idMap_1941_50.csv");
 	}
 	
 	/*

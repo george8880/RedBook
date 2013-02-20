@@ -13,11 +13,11 @@ public class Extractor {
 	static Scanner input = new Scanner(System.in);
 	
 	//Starting ID number for this session
-	static final int ID_START = 2000;
+	static final int ID_START = TextExtractor.ID_START;
 	
 	public static void main(String[] args) throws IOException {
 		//loads the pdf document and records total number of pages 
-		File file = new File("1940_25_polished.pdf");
+		File file = new File("1941_50.pdf");
 		PDDocument doc = new PDDocument();
 		doc = PDDocument.load(file);
 		totalPages = doc.getNumberOfPages();
@@ -51,6 +51,10 @@ public class Extractor {
 			//List of workable sentences in the page
 			MyList<String> page = preparePage(i, st, doc);
 			
+			//First page has an additional title
+			if (i == 1)
+				page.removeHead();
+			
 			while (!page.isEmpty()) {
 				String sentence = page.removeHead();
 				
@@ -61,7 +65,7 @@ public class Extractor {
 				isField = isField(sentence);
 				
 				//Name could pop up anywhere, after info field or essay, so always check
-				if (isName(sentence)) {
+				if (isName(sentence) && !isField(sentence)) {
 					//store essay in last person's essay field and clear store
 					if (currentPerson != null && !store.equals("")) {
 						currentPerson.essay = store;
@@ -123,23 +127,16 @@ public class Extractor {
 				}
 				System.out.println(currentPerson.name);
 				
-				//Page offsets for 1940_50
-				/*
-				if (i >= 341)
-					p += 18;
-				if (i >= 537)
-					p += 5;
-				currentPerson.addPage(p);*/
+				//Page offsets for 1941_50
+				//
 				int p = i;
-				if (i >= 102)
-					p += 459;
-				if (i >= 542)
-					p += 4;
-				if (i >= 736)
-					p += 4;
+				if (i >= 81)
+					p += 6;
+				if (i >= 127)
+					p += 6;
+				if (i >= 381)
+					p += 1;
 				currentPerson.addPage(p);
-				
-				
 			}	
 			}
 		}
@@ -148,8 +145,8 @@ public class Extractor {
 		
 		System.out.println("DONE");
 		
-		g.outputInfo("infoFieldsPages_1940_25.csv");
-		g.outputMap("idMapPages_1940_25.csv");
+		g.outputInfo("infoFieldsPages_1941_50.csv");
+		g.outputMap("idMapPages_1941_50.csv");
 	}
 	
 	private static MyList<String> preparePage (int pageNum, PDFTextStripper st, 
@@ -164,10 +161,13 @@ public class Extractor {
 		} //don't need to add last line because it is just an empty line
 		//Remove extraneous lines (first page, first two lines and last line (page)
 		//All other lines, remove first line and last line
-		result.removeHead();
-		result.removeTail();
 		if (pageNum == 1)
 			result.removeHead();
+		
+		if (SpaceFixer.isTitle(result.head.v))
+			result.removeHead();
+		if (SpaceFixer.isPageNum(result.tail.v))
+			result.removeTail();
 		
 		return result;
 	}
@@ -175,6 +175,11 @@ public class Extractor {
 	//Checks if sentence is the name of a person
 		//If 90% of the characters are uppercase
 		private static boolean isName (String line) {
+			
+			//Take out unique names
+			if (line.indexOf("E D U C A") != -1)
+				return false;
+			
 			String checker = line.toUpperCase();
 			int sameChars = 0;
 			//to make sure line isn't just pure numbers
@@ -213,10 +218,37 @@ public class Extractor {
 				return result;	
 			}
 	
-	//A sentence is the start of a new info field if it contains
-	//one colon
+	//Uses SpaceFixer algorithm to determine if line is
+	//the start of a field or not
 	private static boolean isField (String line) {
-		return (line.indexOf(':') != -1);
+		String test = "";
+		int colonIndex = line.indexOf(':');
+		int semiIndex = line.indexOf(';');
+		int index = -1;
+		//contains : or ;
+		//if contains both, take closer one
+		if (colonIndex != -1 && semiIndex != -1) {
+			int min = Math.min(colonIndex, semiIndex);
+			test = line.substring(0, min);
+			index = min;
+		}
+		else if (colonIndex != -1) {
+			test = line.substring(0, colonIndex);
+			index = colonIndex;
+		}
+		else if (semiIndex != -1) {
+			test = line.substring(0, semiIndex);
+			index = semiIndex;
+		}
+		test = SpaceFixer.prepareTest(test);
+		
+		//If we found a potential field
+		if (!test.equals("")) {
+			String fix = SpaceFixer.closestField(test);
+			if (!fix.equals(""))
+				return true;
+		}
+		return false;
 	}
 	
 	//Checks if a sentence ends in a period

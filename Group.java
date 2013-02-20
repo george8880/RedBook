@@ -9,14 +9,7 @@ import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 
 public class Group {
-	static String[] header = {"ID", "Name", "Essay", "Pages", 
-		"home address", "office address", "home and office address", 
-		"business address", "seasonal address", "mailing address", "last known address", 
-		"born", "died", "prepared at", "occupation", 
-		"offices held", "member of", "years in college", "harvard sons", "harvard brothers",
-		"married", "spouse", "child", "children", "grandchildren", "great-grandchild", 
-		"offices held, honor and awards", "publications", "publications and fine arts"
-		 };
+	static String[] header = Person.fields;
 	
 	private Map<Integer, Person> idMap; //maps id to name
 	

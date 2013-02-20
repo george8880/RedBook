@@ -1,3 +1,5 @@
+//Matches name with id in existing database
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,15 +12,15 @@ import org.supercsv.prefs.CsvPreference;
 
 public class NameMatcher {
 	
-	static final String currMapFile = "idMap_fixed_1940_25.csv";
+	static final String currMapFile = "idMap_fixed_1941_50.csv";
 	static Map<String, Integer> mainMap = new HashMap<String, Integer>();
 	
 	public static void main(String[] args) throws IOException {
-		loadOrig("idMapPages.csv");
+		loadOrig("idMap_1941_25_1.csv");
 		
 		CsvListReader reader = new CsvListReader(new FileReader(currMapFile),  
 				CsvPreference.STANDARD_PREFERENCE);
-		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_1940_25_matched.csv"), 
+		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_1941_50_matched.csv"), 
 				CsvPreference.STANDARD_PREFERENCE);
 		List<String> values = reader.read();
 		
