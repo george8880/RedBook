@@ -1,5 +1,7 @@
 //Uses PDFBox and SuperCVS libraries
 
+// MAKE SURE TO CHANGE PAGES OFFSETS
+
 import java.io.*;
 import java.util.*;
 
@@ -14,10 +16,12 @@ public class Extractor {
 	
 	//Starting ID number for this session
 	static final int ID_START = TextExtractor.ID_START;
+	static String PAGESINFOFIELD = "infoFieldsPages_1942_50.csv";    // CHANGE THIS!!!!!!!!!!!!!!!!!!!!
+	static String PAGESIDMAP = "idMapPages_1942_50.csv";             // CHANGE THIS!!!!!!!!!!!!!!!!!!!!
 	
 	public static void main(String[] args) throws IOException {
 		//loads the pdf document and records total number of pages 
-		File file = new File("1941_50.pdf");
+		File file = new File("1942_50.pdf");                            // CHANGE THIS!!!!!!!!!!!
 		PDDocument doc = new PDDocument();
 		doc = PDDocument.load(file);
 		totalPages = doc.getNumberOfPages();
@@ -127,14 +131,10 @@ public class Extractor {
 				}
 				System.out.println(currentPerson.name);
 				
-				//Page offsets for 1941_50
+				//Page offsets for 1942_50 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				//
 				int p = i;
-				if (i >= 81)
-					p += 6;
-				if (i >= 127)
-					p += 6;
-				if (i >= 381)
+				if (i >= 333)
 					p += 1;
 				currentPerson.addPage(p);
 			}	
@@ -145,8 +145,8 @@ public class Extractor {
 		
 		System.out.println("DONE");
 		
-		g.outputInfo("infoFieldsPages_1941_50.csv");
-		g.outputMap("idMapPages_1941_50.csv");
+		g.outputInfo(PAGESINFOFIELD);
+		g.outputMap(PAGESIDMAP);
 	}
 	
 	private static MyList<String> preparePage (int pageNum, PDFTextStripper st, 

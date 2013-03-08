@@ -1,5 +1,12 @@
 //Used on initial pdf. Fixes whitespaces in headers
 
+//Order of use:
+//SpaceFixer - to fix fields
+//TextExtractor - to get field info, names etc...
+//Extractor - to get accurate pages
+//NameFixer - to fix names
+//NameMatcher - if needed, to match names from previous book
+
 import java.io.*;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -26,20 +33,25 @@ public class SpaceFixer {
 		"born", "died", "mailing address", "degrees"};
 	
 	public static void main(String[] args) throws IOException {
-		File file = new File("1941_50.pdf");
+		File file = new File("1942_50.pdf");                          ////CHANGE HERE
 		PDDocument doc = PDDocument.load(file);
 		int totalPages = doc.getNumberOfPages();
+		System.out.println(totalPages);
 		
 		//used to extract text from pdf document
 		PDFTextStripper st = new PDFTextStripper();
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("WSfixed_1941_50.txt"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("WSfixed_1942_50.txt")); //CHANGE HERE
 		
 		for (int i = 1; i <= totalPages; i++) {
 			//only look at one page at a time
 			st.setStartPage(i);
 			st.setEndPage(i);
 			MyList<String> workText = preparePage(i, st, doc);
+			
+			if (i == 1433) {
+				i = 1433;
+			}
 			
 			while(!workText.isEmpty()) {
 				String line = workText.removeHead();
@@ -81,6 +93,7 @@ public class SpaceFixer {
 			}
 		}
 		doc.close();
+		bw.close();
 	}
 	
 	//returns closest field it is
@@ -197,7 +210,6 @@ public class SpaceFixer {
 	public static boolean isPageNum(String s) {
 		String test = Extractor.stripSpaces(s).toUpperCase().trim();
 		if (test.length() <= 7 && test.indexOf('[') != -1 && test.indexOf(']') != -1) {
-			System.out.println(test);
 			return true;
 		}
 		return false;

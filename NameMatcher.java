@@ -12,15 +12,15 @@ import org.supercsv.prefs.CsvPreference;
 
 public class NameMatcher {
 	
-	static final String currMapFile = "idMap_fixed_1941_50.csv";
+	static final String currMapFile = "idMap_fixed_1942_50.csv";                   //CHANGE
 	static Map<String, Integer> mainMap = new HashMap<String, Integer>();
 	
 	public static void main(String[] args) throws IOException {
-		loadOrig("idMap_1941_25_1.csv");
+		loadOrig("idMap_1942_25.csv");                                             //CHANGE
 		
 		CsvListReader reader = new CsvListReader(new FileReader(currMapFile),  
 				CsvPreference.STANDARD_PREFERENCE);
-		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_1941_50_matched.csv"), 
+		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_1942_50_matched.csv"), //CHANGE
 				CsvPreference.STANDARD_PREFERENCE);
 		List<String> values = reader.read();
 		

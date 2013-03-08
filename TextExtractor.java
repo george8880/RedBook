@@ -18,10 +18,12 @@ public class TextExtractor {
 	static Scanner input = new Scanner(System.in);
 	
 	//Starting ID number for this session
-	static final int ID_START = 4000;
+	static final int ID_START = 7000;                      // CHANGE THIS!!!!!!!!!!!!!!!!!!!!! 9000 is next
+	static String INFOFIELD = "infoFields_1942_50.csv";    // CHANGE THIS!!!!!!!!!!!!!!!!!!!!
+	static String IDMAP = "idMap_1942_50.csv";             // CHANGE THIS!!!!!!!!!!!!!!!!!!!!
 	
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader("WSfixed_1941_50.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("WSfixed_1942_50.txt")); //CHANGE THIS
 		
 		//list of boolean values to keep track of where the text reader is
 		boolean isEssay = false;
@@ -83,7 +85,9 @@ public class TextExtractor {
 						store = "";
 					}
 					
-					store += sentence;
+					//makes sure info field name "________:" is not in store
+					int indexOfColon = sentence.indexOf(':');
+					store += sentence.substring(indexOfColon + 1);
 					
 					if (endsInPeriod(sentence))
 						lastSentenceEndsInPeriod = true;
@@ -127,8 +131,8 @@ public class TextExtractor {
 		
 		System.out.println("DONE");
 		br.close();
-		g.outputInfo("infoFields_1941_50.csv");
-		g.outputMap("idMap_1941_50.csv");
+		g.outputInfo(INFOFIELD);
+		g.outputMap(IDMAP);
 	}
 	
 	/*

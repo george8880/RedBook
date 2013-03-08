@@ -13,7 +13,7 @@ public class Person {
 		"offices held, honor and awards", "publications", "publications and fine arts", "degrees"
 		 };
 	 
-	 final static String NO_FIELD_INFO_MSG = "N/A";
+	 final static String NO_FIELD_INFO_MSG = "";
 	
 	String name;
 	String essay;

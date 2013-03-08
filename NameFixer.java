@@ -17,11 +17,11 @@ public class NameFixer {
 	//static Map<String, String> pastWork = new HashMap<String, String>();
 	
 	public static void main(String[] args) throws IOException {
-		getNameList("NameList1941.txt");
+		getNameList("NameList1942.txt");                                                   //CHANGE
 		//loadPast("pastWork.txt");
-		ICsvListReader listReader = new CsvListReader(new FileReader("idMap_1941_50.csv"), 
+		ICsvListReader listReader = new CsvListReader(new FileReader("idMap_1942_50.csv"), //CHANGE
 				CsvPreference.STANDARD_PREFERENCE);
-		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_fixed_1941_50.csv"), 
+		CsvListWriter writer = new CsvListWriter(new FileWriter("idMap_fixed_1942_50.csv"), //CHANGE
 				CsvPreference.STANDARD_PREFERENCE);
     	Scanner input = new Scanner(System.in);
 		
@@ -32,12 +32,12 @@ public class NameFixer {
         while ((customerList = listReader.read(processors)) != null) {
         	String id = (String) customerList.get(0);
         	String name = (String)customerList.get(1);
+        	//String deceased = (name.indexOf('?') != -1 || name.indexOf('*') != -1)?"Yes":"No";
         	name = prepareName(name);
-        	String deceased = (name.indexOf('?') != -1 || name.indexOf('*') != -1)?"Yes":"No";
         	String fixedName;
         	int minD = computeDistance(name, removeSpaces(nameList.get(0)));
         	
-        	//If entry also handles in some other runtime, no need to do again
+        	//If entry also handled in some other runtime, no need to do again
         	/*if (pastWork.containsKey((String) customerList.get(1))) {
         		String fix = pastWork.get((String) customerList.get(1));
         		
@@ -69,8 +69,16 @@ public class NameFixer {
         	}
 	        	
         	fixed.add(id);
-        	fixed.add(fixedName);
-        	fixed.add(deceased);
+        	
+        	//checks if deceased
+        	if (!fixedName.equals("") && (fixedName.charAt(0) < 'A' || fixedName.charAt(0) > 'Z')) {
+        		fixed.add(fixedName.substring(1).trim());
+        		fixed.add("Deceased");
+        	}
+        	else
+        		fixed.add(fixedName);
+        	
+        	//fixed.add(deceased);
         	writer.write(fixed);
         	fixed = new ArrayList<String>();
         }
@@ -96,7 +104,7 @@ public class NameFixer {
 		String s = br.readLine();
 		
 		while (s != null) {
-			if (!s.equals("1941") && !s.equals("") && (s.indexOf(')') == -1 || s.indexOf('(') != -1) &&
+			if (!s.equals("1942") && !s.equals("") && (s.indexOf(')') == -1 || s.indexOf('(') != -1) &&
 					s.substring(0,1).equals(s.substring(0,1).toUpperCase())) {
 				if (s.indexOf('(') != -1)
 					s = s.substring(0, s.indexOf('('));
@@ -129,8 +137,8 @@ public class NameFixer {
 	private static CellProcessor[] getProcessors() {
         
         final CellProcessor[] processors = new CellProcessor[] { 
-                new NotNull(), // customerNo (must be unique)
-                new NotNull(), // firstName
+                new NotNull(), // id
+                new NotNull(), // name
         };
         
         return processors;
